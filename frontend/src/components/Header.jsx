@@ -13,7 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useUserLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 import { toast } from "react-toastify";
-import {LinkContainer} from 'react-router-bootstrap';
+import { LinkContainer } from "react-router-bootstrap";
+import SearchBox from "./SearchBox";
 
 function Header() {
   const { cartItems } = useSelector((state) => state.cart);
@@ -36,11 +37,12 @@ function Header() {
       <Navbar variant="dark" bg="dark" expand="md" collapseOnSelect>
         <Container>
           <NavLink to="/" className="navbar-brand">
-            <img src={logo} alt="logo" /> PranayaEmporium
+            <img src={logo} alt="logo" /> Broadway
           </NavLink>
           <Navbar.Toggle aria-controls="navbar" />
           <Navbar.Collapse id="navbar">
             <Nav className="ms-auto">
+              <SearchBox />
               <NavLink to="/cart" className="nav-link">
                 <FaShoppingCart />
                 Cart{" "}
@@ -69,15 +71,13 @@ function Header() {
                   </NavDropdown.Item>
                 </NavDropdown>
               )}
-              {userInfo && userInfo.isAdmin &&(
+              {userInfo && userInfo.isAdmin && (
                 <NavDropdown title="admin">
                   <LinkContainer to="/admin/orders">
                     <NavDropdown.Item>Orders</NavDropdown.Item>
-                    
                   </LinkContainer>
                   <LinkContainer to="/admin/products">
                     <NavDropdown.Item>Products</NavDropdown.Item>
-                    
                   </LinkContainer>
                 </NavDropdown>
               )}

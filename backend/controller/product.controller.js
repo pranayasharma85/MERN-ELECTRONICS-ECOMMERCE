@@ -1,14 +1,38 @@
 import Product from "../models/product.model.js";
+import Order from "../models/order.model.js";
 import asyncHandler from "../middleware/asynchandler.middleware.js";
 import ApiError from "../utils/apiError.js";
-import Order from '../models/order.model.js';
 
 // @desc get all products
 // @route /api/v1/products
 // @access public
 const getProducts = asyncHandler(async (req, res) => {
-  let products = await Product.find({});
-  res.send(products);
+  const pageSize = 4;
+  let page = Number(req.query.pageNumber) || 1;
+  let keyword = req.query.keyword;
+  keyword = keyword
+    ? {
+        $or: [
+          {
+            name: {
+              $regex: keyword,
+              $options: "i",
+            },
+          },
+          {
+            description: {
+              $regex: keyword,
+              $options: "i",
+            },
+          },
+        ],
+      }
+    : {};
+  let productCount = await Product.countDocuments({ ...keyword });
+  let products = await Product.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+  res.send({ products, page, pages: Math.ceil(productCount / pageSize) });
 });
 
 // @desc get product by id
@@ -98,27 +122,31 @@ const addUserReview = asyncHandler(async (req, res) => {
   res.send({ message: "Review added to product" });
 });
 
-
 const canBeReviewed = asyncHandler(async (req, res) => {
   let eligible = false;
   let productId = req.params.id;
   let userId = req.user._id;
   let orders = await Order.find({ user: userId, isDelivered: true });
   orders.forEach((order) => {
-    let productOrder = order.orderItems.find((item) => item.product == productId);
+    let productOrder = order.orderItems.find(
+      (item) => item.product == productId
+    );
     if (productOrder) {
       eligible = true;
-
     }
   });
   if (eligible) {
     res.send({ canBeReviewed: true });
-
-  }
-  else {
+  } else {
     res.send({ canBeReviewed: false });
   }
 });
+
+const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  res.send(products);
+});
+
 export {
   getProducts,
   getProductById,
@@ -127,4 +155,5 @@ export {
   deleteProduct,
   addUserReview,
   canBeReviewed,
+  getTopProducts,
 };

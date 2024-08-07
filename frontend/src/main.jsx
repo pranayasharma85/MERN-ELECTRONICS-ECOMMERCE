@@ -25,6 +25,8 @@ import OrderListPage from "./pages/admin/OrderListPage.jsx";
 import ProductListPage from "./pages/admin/ProductListPage.jsx";
 import ProductEditPage from "./pages/admin/ProductEditPage.jsx";
 
+import { HelmetProvider } from "react-helmet-async";
+
 // const router = createBrowserRouter([
 //   {
 //     path: "/",
@@ -46,6 +48,13 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="" element={<HomePage />} />
+      <Route path="page/:pageNumber" element={<HomePage />} />
+      <Route path="search/:keyword" element={<HomePage />} />
+      <Route path="search/:keyword/page/:pageNumber" element={<HomePage />} />
+      <Route
+        path="category/:category/page/:pageNumber"
+        element={<HomePage />}
+      />
       <Route path="product/:id" element={<ProductPage />} />
       <Route path="cart" element={<CartPage />} />
       <Route path="signin" element={<LoginPage />} />
@@ -59,6 +68,10 @@ const router = createBrowserRouter(
       <Route path="" element={<AdminRoute />}>
         <Route path="admin/orders" element={<OrderListPage />} />
         <Route path="admin/products" element={<ProductListPage />} />
+        <Route
+          path="admin/products/page/:pageNumber"
+          element={<ProductListPage />}
+        />
         <Route path="admin/product/:id/edit" element={<ProductEditPage />} />
       </Route>
     </Route>
@@ -66,7 +79,9 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <RouterProvider router={router} />
-  </Provider>
+  <HelmetProvider>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </HelmetProvider>
 );
