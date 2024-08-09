@@ -1,6 +1,6 @@
 import { Row, Col, Table, Button } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   useAddProductMutation,
   useDeleteProductMutation,
@@ -10,7 +10,9 @@ import Message from "../../components/Message";
 import { toast } from "react-toastify";
 
 function ProductListPage() {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  const {pageNumber, keyword} = useParams();
+  const { data, isLoading, error } = useGetProductsQuery({pageNumber, keyword});
+ 
   const [addProduct, { isLoading: productLoading }] = useAddProductMutation();
   const [deleteProduct, { isLoading: deleteLoading }] =
     useDeleteProductMutation();
@@ -64,7 +66,7 @@ function ProductListPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {data.products.map((product) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>

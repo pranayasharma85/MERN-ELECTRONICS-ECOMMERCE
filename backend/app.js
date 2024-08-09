@@ -27,6 +27,22 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/image", uploadRouter);
 
+//
+if(process.env.NODE_ENV==='production')
+{
+    const __dirname=path.resolve();
+    app.use(express.static(path.join(__dirname, 'frontend/dist')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
+        });
+}
+else{
+    app.get('/',(req,res)=>{
+        res.send('Server is running');
+
+    });
+}
+
 // error handlers
 app.use(notFoundHandler);
 app.use(errorHandler);
