@@ -8,11 +8,11 @@ import {
 } from "../../slices/productSlice";
 import Message from "../../components/Message";
 import { toast } from "react-toastify";
+import Paginate from "../../components/Paginate";
 
 function ProductListPage() {
-  const {pageNumber, keyword} = useParams();
-  const { data, isLoading, error } = useGetProductsQuery({pageNumber, keyword});
- 
+  const { pageNumber } = useParams();
+  const { data, isLoading, error } = useGetProductsQuery({ pageNumber });
   const [addProduct, { isLoading: productLoading }] = useAddProductMutation();
   const [deleteProduct, { isLoading: deleteLoading }] =
     useDeleteProductMutation();
@@ -53,50 +53,53 @@ function ProductListPage() {
       ) : error ? (
         <Message variant="danger">{error.data.error}</Message>
       ) : (
-        <Table responsive hover striped className="table-sm">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Brand</th>
-              <th>Category</th>
-              <th>Stock</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.products.map((product) => (
-              <tr key={product._id}>
-                <td>{product._id}</td>
-                <td>{product.name}</td>
-                <td>{product.price}</td>
-                <td>{product.brand}</td>
-                <td>{product.category}</td>
-                <td>{product.countInStock}</td>
-                <td>
-                  <Button
-                    as={Link}
-                    size="sm"
-                    variant="light"
-                    to={`/admin/product/${product._id}/edit`}
-                  >
-                    <FaEdit />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    className="mx-2"
-                    onClick={() => deleteProductHandler(product._id)}
-                    disabled={deleteLoading}
-                  >
-                    <FaTrash style={{ color: "white" }} />
-                  </Button>
-                </td>
+        <>
+          <Table responsive hover striped className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {data.products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product._id}</td>
+                  <td>{product.name}</td>
+                  <td>{product.price}</td>
+                  <td>{product.brand}</td>
+                  <td>{product.category}</td>
+                  <td>{product.countInStock}</td>
+                  <td>
+                    <Button
+                      as={Link}
+                      size="sm"
+                      variant="light"
+                      to={`/admin/product/${product._id}/edit`}
+                    >
+                      <FaEdit />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      className="mx-2"
+                      onClick={() => deleteProductHandler(product._id)}
+                      disabled={deleteLoading}
+                    >
+                      <FaTrash style={{ color: "white" }} />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <Paginate page={data.page} pages={data.pages} admin={true} />
+        </>
       )}
     </>
   );

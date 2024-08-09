@@ -14,7 +14,7 @@ import {
   useGetOrderByIdQuery,
 } from "../slices/orderSlice";
 import Message from "../components/Message";
-import { orderStatusColors } from "../utils/orderStatusColor";
+import {orderStatusColors} from '../utils/orderStatusColor';
 import { useSelector } from "react-redux";
 import { FaEdit } from "react-icons/fa";
 import { useState } from "react";
