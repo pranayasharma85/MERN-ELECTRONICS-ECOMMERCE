@@ -37,7 +37,7 @@ function Header() {
       <Navbar variant="dark" bg="dark" expand="md" collapseOnSelect>
         <Container>
           <NavLink to="/" className="navbar-brand">
-            <img src={logo} alt="logo" /> Broadway
+            <img src={logo} alt="logo" /> PranayaEmporium
           </NavLink>
           <Navbar.Toggle aria-controls="navbar" />
           <Navbar.Collapse id="navbar">
